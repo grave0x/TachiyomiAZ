@@ -110,7 +110,7 @@ class EHentai(
                     // Do not parse header and ads
                     it.selectFirst("th") == null && it.selectFirst(".itd") == null
                 }.map {
-                    val thumbnailElement = it.selectFirst(".gl1e img, .gl2c .glthumb img")!!
+                    val thumbnailElement = it.selectFirst(".gl1e img, .gl2c .glthumb img, .gl1m img, .gl1t img, .gl3t img, .glthumb img, img")
                     val column2 = it.selectFirst(".gl3e, .gl2c")!!
                     val linkElement = it.selectFirst(".gl3c > a, .gl2e > div > a")!!
 
@@ -126,13 +126,11 @@ class EHentai(
                         manga =
                         Manga.create(id).apply {
                             // Get title
-                            title = thumbnailElement.attr("title")
-
+                            title = thumbnailElement?.attr("title")?.nullIfBlank() ?: thumbnailElement?.attr("alt")
                             url = EHentaiSearchMetadata.normalizeUrl(linkElement.attr("href"))
-                            // Get image
-                            thumbnail_url = thumbnailElement.attr("src")
-
-                            // TODO Parse genre + uploader + tags
+                            // Get image (support lazy loaded images via data-src)
+                            thumbnail_url = thumbnailElement?.attr("src").nullIfBlank()
+                                ?: thumbnailElement?.attr("data-src").nullIfBlank()
                         }
                     )
                 }.let { // reverse the list if the filter is on, making the pager work
@@ -448,9 +446,13 @@ class EHentai(
                 altTitle = select("#gj").text().nullIfBlank()?.trim()
 
                 thumbnailUrl =
-                    select("#gd1 div").attr("style").nullIfBlank()?.let {
-                        it.substring(it.indexOf('(') + 1 until it.lastIndexOf(')'))
-                    }
+                    select("#gd1 img").attr("src").nullIfBlank()
+                        ?: select("#gd1 img").attr("data-src").nullIfBlank()
+                        ?: select("#gd1 div, #gd1").attr("style").nullIfBlank()?.let { style ->
+                            val urlStart = style.indexOf("url(").takeIf { it != -1 }?.let { it + 4 } ?: return@let null
+                            val urlEnd = style.indexOf(')', urlStart).takeIf { it != -1 } ?: return@let null
+                            style.substring(urlStart, urlEnd).trim('\'', '"', ' ')
+                        }
                 genre =
                     select(".cs")
                         .attr("onclick")
