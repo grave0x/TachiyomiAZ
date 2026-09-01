@@ -10,6 +10,13 @@
         app:showAsAction="collapseActionView|ifRoom" />
 
     <item
+        android:id="@+id/action_edit_repos"
+        android:icon="@drawable/ic_public_24dp"
+        android:title="@string/action_edit_repos"
+        app:iconTint="?attr/colorOnPrimary"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_filter_list_24dp"
         android:title="@string/action_filter"

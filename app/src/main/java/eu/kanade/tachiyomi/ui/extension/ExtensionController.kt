@@ -19,6 +19,7 @@ import eu.kanade.tachiyomi.databinding.ExtensionControllerBinding
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.ui.base.controller.NucleusController
 import eu.kanade.tachiyomi.ui.base.controller.withFadeTransaction
+import eu.kanade.tachiyomi.ui.extension.repos.RepoController
 import eu.kanade.tachiyomi.util.view.deferStateRestorationUntilItemsAreLoaded
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -90,6 +91,9 @@ open class ExtensionController :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_search -> expandActionViewFromInteraction = true
+            R.id.action_edit_repos -> {
+                router.pushController(RepoController().withFadeTransaction())
+            }
             R.id.action_settings -> {
                 router.pushController(
                     (RouterTransaction.with(ExtensionFilterController()))
