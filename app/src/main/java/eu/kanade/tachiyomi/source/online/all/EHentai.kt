@@ -140,20 +140,13 @@ class EHentai(
                 }
 
             // Add to page if required
-            val hasNextPage =
-                if (parsedLocation == null ||
-                    !containsReverseParam
-                ) {
-                    select("a[onclick=return false]").last()
-                        ?.let {
-                            it.text() == ">"
-                        } ?: select(".searchnav >div > a")
-                        .find { it.attr("href").contains("next") }
-                        ?.let { true }
-                        ?: false
-                } else {
-                    select("#uprev").firstOrNull()?.hasAttr("href") ?: false
-                }
+            val hasNextPage = select("a[onclick=return false]").last()
+                ?.let {
+                    it.text() == ">"
+                } ?: select(".searchnav > div > a, #unext")
+                .find { it.attr("href").contains("next") || it.attr("href").contains("page=") }
+                ?.let { true }
+                ?: false
             Pair(parsedMangas, hasNextPage)
         }
 
@@ -366,13 +359,10 @@ class EHentai(
     ): Request {
         return GET(
             page?.let {
-                val containsReverse = url.toHttpUrlOrNull()?.queryParameterNames?.contains(REVERSE_PARAM) ?: false
-                if (page > 1 && !containsReverse) {
-                    addParam(url, "next", page.toString())
-                } else if (containsReverse) {
-                    addParam(url, "prev", page.toString())
-                } else {
+                if (page > 1) {
                     addParam(url, "page", (page - 1).toString())
+                } else {
+                    url
                 }
             } ?: url,
             additionalHeaders?.let {
