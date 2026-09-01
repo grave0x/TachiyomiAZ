@@ -20,7 +20,7 @@ class RepoItem(val repo: String) : AbstractFlexibleItem<RepoHolder>() {
      * Returns the layout resource for this item.
      */
     override fun getLayoutRes(): Int {
-        return R.layout.categories_item
+        return R.layout.repo_item
     }
 
     /**
