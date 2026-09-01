@@ -854,6 +854,8 @@ z
     <string name="repo_hint">username/repo or index URL</string>
     <string name="action_add_repo_message">Enter a GitHub repo as \'username/repo\' (the owner and repository name), or paste the full URL to a repo index. Both the legacy index.min.json / repo.json and the newer index.pb store format are supported.</string>
     <string name="action_edit_repos">Edit repos</string>
+    <string name="cookie_login">Cookie login</string>
+    <string name="cookie_login_message">Enter EH/ExH cookies (format: ipb_member_id=...; ipb_pass_hash=...; igneous=...)</string>
     <plurals name="num_repos">
         <item quantity="one">%d additional repo</item>
         <item quantity="other">%d additional repos</item>

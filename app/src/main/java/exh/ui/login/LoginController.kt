@@ -82,6 +82,11 @@ class LoginController : NucleusController<EhActivityLoginBinding, LoginPresenter
                 openIgneousDialog()
             }
 
+            binding.btnCookieLogin.setOnClickListener {
+                hideAdvancedOptions(this)
+                openCookieLoginDialog()
+            }
+
             CookieManager.getInstance().removeAllCookies {
                 launchUI {
                     startWebview(view)
@@ -101,6 +106,47 @@ class LoginController : NucleusController<EhActivityLoginBinding, LoginPresenter
             .positiveButton(android.R.string.ok) {
                 if (!igneous.isNullOrBlank()) {
                     this.igneous = igneous?.toString()?.trim()
+                }
+            }
+            .negativeButton(android.R.string.cancel)
+            .show()
+    }
+
+    fun openCookieLoginDialog() {
+        var inputCookies: CharSequence? = null
+        MaterialDialog(activity!!)
+            .title(R.string.cookie_login)
+            .message(R.string.cookie_login_message)
+            .input { _, charSequence ->
+                inputCookies = charSequence
+            }
+            .positiveButton(android.R.string.ok) {
+                val cookieStr = inputCookies?.toString() ?: return@positiveButton
+                var memberId: String? = null
+                var passHash: String? = null
+                var igneous: String? = null
+
+                cookieStr.split(";").forEach { part ->
+                    val pair = part.trim().split("=")
+                    if (pair.size >= 2) {
+                        val key = pair[0].trim().lowercase()
+                        val value = pair.subList(1, pair.size).joinToString("=").trim()
+                        when (key) {
+                            MEMBER_ID_COOKIE -> memberId = value
+                            PASS_HASH_COOKIE -> passHash = value
+                            IGNEOUS_COOKIE -> igneous = value
+                        }
+                    }
+                }
+
+                if (!memberId.isNullOrBlank() && !passHash.isNullOrBlank()) {
+                    preferenceManager.memberIdVal().set(memberId!!)
+                    preferenceManager.passHashVal().set(passHash!!)
+                    if (!igneous.isNullOrBlank()) {
+                        preferenceManager.igneousVal().set(igneous!!)
+                    }
+                    WarnConfigureDialogController.showIfNeeded(router)
+                    router.popCurrentController()
                 }
             }
             .negativeButton(android.R.string.cancel)

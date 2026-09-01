@@ -80,6 +80,13 @@
                             android:text="@string/custom_igneous_cookie" />
 
                         <Button
+                            android:id="@+id/btn_cookie_login"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cookie_login" />
+
+                        <Button
                             android:id="@+id/btn_close"
                             style="@style/Widget.AppCompat.Button.Borderless"
                             android:layout_width="match_parent"
