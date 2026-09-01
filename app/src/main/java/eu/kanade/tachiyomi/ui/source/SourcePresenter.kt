@@ -94,14 +94,17 @@ class SourcePresenter(
 
     private fun loadLastUsedSource() {
         // Immediate initial load
-        preferences.lastUsedCatalogueSource().get().let { updateLastUsedSource(it) }
+        updateLastUsedSource(preferences.lastUsedCatalogueSource().get())
 
-        // Subsequent updates. Cancelled first because updateSources() runs again whenever the
-        // enabled sources change, and each call used to leave another collector on scope.
+        // Subsequent updates combining source ID and hide setting
         lastUsedPrefJob?.cancel()
         lastUsedPrefJob =
-            preferences.lastUsedCatalogueSource().asFlow()
-                .drop(1)
+            combine(
+                preferences.lastUsedCatalogueSource().asFlow(),
+                preferences.hideLastUsedSource().asFlow()
+            ) { sourceId, hide ->
+                if (hide) null else sourceId
+            }
                 .distinctUntilChanged()
                 .onEach { updateLastUsedSource(it) }
                 .launchIn(presenterScope)
@@ -116,8 +119,8 @@ class SourcePresenter(
             )
     }
 
-    private fun updateLastUsedSource(sourceId: Long) {
-        if (preferences.hideLastUsedSource().get()) {
+    private fun updateLastUsedSource(sourceId: Long?) {
+        if (sourceId == null || preferences.hideLastUsedSource().get()) {
             lastUsedSourceFlow.value = null
             return
         }
