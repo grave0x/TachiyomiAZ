@@ -364,7 +364,7 @@ class HttpPageLoader(
                     page.bg =
                         ImageUtil.autoSetBackground(
                             image,
-                            readerTheme == 2,
+                            readerTheme == 3,
                             prefs.context
                         )
                     page.bgType = PagerPageHolder.getBGType(readerTheme, prefs.context)

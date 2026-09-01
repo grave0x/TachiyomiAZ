@@ -125,7 +125,7 @@ object ImageUtil {
             if (alwaysUseWhite) {
                 Color.WHITE
             } else {
-                context.getResourceColor(androidx.appcompat.R.attr.colorPrimary)
+                context.getResourceColor(android.R.attr.colorBackground)
             }
         if (image == null) return backgroundColor.toDrawable()
         if (image.width < 50 || image.height < 50) {

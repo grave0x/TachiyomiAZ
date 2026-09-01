@@ -564,7 +564,7 @@ class PagerPageHolder(
             readerTheme: Int,
             context: Context
         ): Int {
-            return if (readerTheme == 3) {
+            return if (readerTheme >= 3) {
                 if (context.isInNightMode()) 2 else 1
             } else {
                 0
