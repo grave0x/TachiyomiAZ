@@ -25,6 +25,9 @@ class PagerConfig(private val viewer: PagerViewer, preferences: PreferencesHelpe
     // SY -->
     var readerTheme = 0
         private set
+
+    var sidePadding = 0
+        private set
     // SY <--
 
     init {
@@ -43,6 +46,9 @@ class PagerConfig(private val viewer: PagerViewer, preferences: PreferencesHelpe
         // SY -->
         preferences.readerTheme()
             .register({ readerTheme = it }, { imagePropertyChangedListener?.invoke() })
+
+        preferences.webtoonSidePadding()
+            .register({ sidePadding = it }, { imagePropertyChangedListener?.invoke() })
         // SY <--
     }
 

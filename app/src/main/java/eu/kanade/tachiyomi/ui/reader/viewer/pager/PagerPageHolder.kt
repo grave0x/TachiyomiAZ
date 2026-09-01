@@ -116,6 +116,8 @@ class PagerPageHolder(
     private var readImageHeaderJob: Job? = null
 
     init {
+        val margin = (Resources.getSystem().displayMetrics.widthPixels * (viewer.config.sidePadding / 100f)).toInt()
+        setPadding(margin, 0, margin, 0)
         addView(progressBar)
         observeStatus()
     }
